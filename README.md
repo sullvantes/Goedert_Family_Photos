@@ -11,4 +11,4 @@ To Create Dev Server:
   - create superuser: 'python manage.py createsuperuser'
   - run server: 'python manage.py runserver'
   
-  if you have questions, reach 
+  if you have questions, reach out @ goatfamphotos.slack.com
