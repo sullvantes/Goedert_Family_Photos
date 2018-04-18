@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 # # -*- coding: utf-8 -*-
 # from __future__ import unicode_literals
@@ -9,15 +10,16 @@ from django.contrib import admin
 # from django.forms import ModelForm
 
 class Relative(models.Model):
-    user = models.ForeignKey(User, null = True, blank = True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, null = True, blank = True, on_delete=models.SET_NULL, related_name = 'related_relative')
     first_name= models.CharField(max_length = 50, verbose_name = 'First Name')
     last_name = models.CharField(max_length = 50, verbose_name = 'Last Name')
     birth_date = models.DateField(null = True, blank = True)
-    birth_place = models.CharField(max_length = 50, verbose_name = 'Last Name')
+    birth_place = models.CharField(max_length = 50, null = True, blank = True, verbose_name = 'Birthplace')
     death_date= models.DateField(null = True, blank = True)
     parents = models.ManyToManyField("self", blank=True)
     spouses = models.ManyToManyField("self", blank=True)
     current_spouse = models.ForeignKey("self", null = True, blank = True, on_delete=models.SET_NULL)
+    created_by = models.ForeignKey(User, null = True, blank = True, on_delete=models.SET_NULL, related_name = 'created_relatives')
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
 
@@ -35,11 +37,12 @@ class Relative(models.Model):
             return "%s" % self.first_name
 
     def __unicode__(self):
-        return self.display_name
+        return self.first_name, self.last_name
 
-class ArticleForm(ModelForm):
+class RelativeForm(ModelForm):
     class Meta:
-        model = Article
+        model = Relative
+        fields = '__all__'
 
 class Photo(models.Model):
     drive_id = models.CharField(max_length = 50)
@@ -54,9 +57,9 @@ class Photo(models.Model):
     def __unicode__(self):
         return self.drive_title
 
-class Notes(models.Model):
-    user = models.ForeignKey(User, null = True, blank = True, on_delete=models.CASCADE)
-    photo = models.ForeignKey(Photo, null = True, blank = True, on_delete=models.CASCADE)
+class Note(models.Model):
+    created_by = models.ForeignKey(User, null = True, blank = True, on_delete=models.SET_NULL, related_name = 'users_notes')
+    photo = models.ForeignKey(Photo, null = True, blank = True, on_delete=models.CASCADE, related_name = 'photos_notes' )
     note = models.TextField(null=True, blank = True)
     created_at = models.DateTimeField(auto_now_add = True)
     updated_at = models.DateTimeField(auto_now = True)
