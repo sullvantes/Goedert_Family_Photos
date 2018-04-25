@@ -19,4 +19,5 @@ from django.urls import include, path, re_path
 urlpatterns = [
     path('admin/', admin.site.urls),
     re_path(r'^drive/', include('apps.drive.urls')),
+    re_path(r'^rest/', include('apps.rest.urls')),
 ]
